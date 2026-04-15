@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#7B61FF">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Vape Free">
+<meta name="description" content="Deja el vape. Ve libre.">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Vape Free</title>
+<style>
+  :root{
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI",
+    Roboto, Inter, Helvetica, Arial, sans-serif;
+
+  --color-background-app: #F5F4FF;
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #F0EFFE;
+
+  --color-text-primary: #161616;
+  --color-text-secondary: #4e4b44;
+  --color-text-tertiary: #7e7a72;
+
+  --color-border-secondary: #C9C3F5;
+  --color-border-tertiary: #DDD9FB;
+
+  --border-radius-md: 12px;
+  --border-radius-lg: 18px;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 6px 18px rgba(0,0,0,.05);
+
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html, body{
+  margin:0;
+  padding:0;
+  background:var(--color-background-app);
+  color:var(--color-text-primary);
+  font-family:var(--font-sans);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
+
+body{
+  min-height:100vh;
+}
+
+button, input, textarea{
+  font:inherit;
+}
+
+input, textarea, button{
+  -webkit-appearance:none;
+  appearance:none;
+}
+
+#root{
+  min-height:100vh;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+.app{
+  font-family:var(--font-sans);
+  max-width:430px;
+  margin:0 auto;
+  min-height:100vh;
+  padding:
+    calc(var(--safe-top) + 10px)
+    14px
+    calc(var(--safe-bottom) + 28px);
+}
+.hdr{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding-top:calc(var(--safe-top) + .875rem);
+  padding-bottom:.9rem;
+  border-bottom:.5px solid var(--color-border-tertiary);
+  margin-bottom:.875rem;
+  position:sticky;
+  top:0;
+  background:rgba(245,244,255,.92);
+  backdrop-filter:blur(10px);
+  z-index:20;
+}
+.logo{font-size:18px;font-weight:500;color:var(--color-text-primary);letter-spacing:-.3px}
+.logo em{color:#7B61FF;font-style:normal}
+.sync-wrap{display:flex;align-items:center;gap:5px}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:#B4B2A9;flex-shrink:0}
+.sync-lbl{font-size:11px;color:var(--color-text-tertiary)}
+.card{
+  background:var(--color-background-primary);
+  border:.5px solid var(--color-border-tertiary);
+  border-radius:var(--border-radius-lg);
+  padding:1.125rem;
+  margin-bottom:.75rem;
+  box-shadow:var(--shadow-sm);
+}
+.tab-bar{
+  display:flex;
+  gap:2px;
+  background:var(--color-background-secondary);
+  border-radius:var(--border-radius-md);
+  padding:3px;
+  margin-bottom:.875rem;
+  overflow-x:auto;
+  scrollbar-width:none;
+  position:sticky;
+  top:62px;
+  z-index:15;
+  backdrop-filter:blur(10px);
+}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;border:none;background:transparent;border-radius:6px;padding:6px 10px;font-size:10px;font-weight:500;cursor:pointer;color:var(--color-text-tertiary);font-family:var(--font-sans);transition:all .15s;white-space:nowrap}
+.tab.on{background:var(--color-background-primary);color:var(--color-text-primary);border:.5px solid var(--color-border-tertiary)}
+.panel{display:none}.panel.on{display:block}
+.metric-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:.75rem}
+.met{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.875rem;text-align:center}
+.met-lbl{font-size:11px;color:var(--color-text-tertiary);margin-bottom:3px}
+.met-val{font-size:20px;font-weight:500;color:var(--color-text-primary)}
+.met-sub{font-size:10px;color:var(--color-text-tertiary);margin-top:1px}
+.hero{
+  text-align:center;
+  padding:1.25rem 1rem 1rem;
+  background:var(--color-background-primary);
+  border:.5px solid var(--color-border-tertiary);
+  border-radius:var(--border-radius-lg);
+  margin-bottom:.75rem;
+  box-shadow:var(--shadow-sm);
+}
+
+.ring-wrap{position:relative;width:140px;height:140px;margin:0 auto .75rem}
+.ring-svg{width:140px;height:140px;transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--color-background-secondary);stroke-width:11}
+.ring-fill{fill:none;stroke:#7B61FF;stroke-width:11;stroke-linecap:round;transition:stroke-dashoffset .7s ease}
+.ring-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-num{font-size:40px;font-weight:500;color:var(--color-text-primary);line-height:1}
+.ring-lbl{font-size:11px;color:var(--color-text-tertiary);margin-top:2px}
+.pill{display:inline-flex;align-items:center;gap:4px;background:#EEF0FF;color:#3D2BB5;font-size:11px;font-weight:500;padding:3px 10px;border-radius:99px;margin-bottom:.625rem}
+.streak-row{display:flex;gap:4px;justify-content:center;margin-top:.5rem}
+.s-dot{width:8px;height:8px;border-radius:50%}
+.s-dot.done{background:#7B61FF}.s-dot.today{background:#A594F9}.s-dot.empty{background:var(--color-background-secondary);border:.5px solid var(--color-border-secondary)}
+.sec{font-size:11px;font-weight:500;color:var(--color-text-tertiary);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.625rem}
+.puff-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:.625rem}
+.puff-ct{font-size:13px;font-weight:500}
+.puff-ct.ok{color:#7B61FF}.puff-ct.warn{color:#BA7517}.puff-ct.over{color:#E24B4A}
+.puff-track{background:var(--color-background-secondary);border-radius:99px;height:7px;overflow:hidden;margin-bottom:.875rem}
+.puff-fill{height:100%;border-radius:99px;transition:width .4s,background .3s}
+.puff-fill.ok{background:#7B61FF}.puff-fill.warn{background:#BA7517}.puff-fill.over{background:#E24B4A}
+.log-btn{width:100%;padding:11px;background:#EEF0FF;color:#3D2BB5;border:.5px solid rgba(123,97,255,.25);border-radius:var(--border-radius-md);font-family:var(--font-sans);font-size:14px;font-weight:500;cursor:pointer;margin-bottom:7px;transition:background .15s}
+.log-btn:hover{background:#DDD9FF}
+.panic-btn{width:100%;padding:10px;background:#FCEBEB;color:#791F1F;border:.5px solid rgba(226,75,74,.15);border-radius:var(--border-radius-md);font-family:var(--font-sans);font-size:13px;font-weight:500;cursor:pointer;transition:background .15s}
+.panic-btn:hover{background:#f7d0d0}
+.plan-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:.5px solid var(--color-border-tertiary)}
+.plan-row:last-child{border:none}
+.plan-wk{font-size:12px;font-weight:500;color:var(--color-text-secondary);min-width:50px}
+.plan-bg{flex:1;background:var(--color-background-secondary);border-radius:99px;height:5px;overflow:hidden}
+.plan-fill{height:100%;border-radius:99px;background:#7B61FF}
+.plan-fill.curr{background:#A594F9}
+.plan-num{font-size:11px;font-weight:500;color:var(--color-text-primary);min-width:48px;text-align:right}
+.curr-tag{font-size:10px;background:#7B61FF;color:white;padding:2px 7px;border-radius:99px;margin-left:4px}
+.tool-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 0;
+  border-bottom:.5px solid var(--color-border-tertiary);
+  cursor:pointer;
+  transition:background .12s ease;
+  border-radius:10px;
+}
+
+.tool-row:hover{
+  background:rgba(0,0,0,.015);
+}
+
+.tool-row:last-child{
+  border:none;
+}
+.tool-icon{font-size:18px;width:26px;text-align:center;flex-shrink:0}
+.tool-name{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.tool-desc{font-size:11px;color:var(--color-text-tertiary);margin-top:1px}
+.badge-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+.badge{text-align:center;padding:.625rem .25rem;border-radius:var(--border-radius-md);border:.5px solid var(--color-border-tertiary)}
+.badge.on{background:#EEF0FF;border-color:#A594F9}
+.badge.off{opacity:.32}
+.badge-icon{font-size:22px;display:block;margin-bottom:3px}
+.badge-name{font-size:10px;font-weight:500;color:var(--color-text-secondary)}
+.badge.on .badge-name{color:#3D2BB5}
+.h-row{display:flex;gap:10px;margin-bottom:12px;align-items:flex-start}
+.h-dot{width:10px;height:10px;border-radius:50%;margin-top:3px;flex-shrink:0;background:var(--color-background-secondary);border:1.5px solid var(--color-border-secondary);transition:all .3s}
+.h-dot.done{background:#7B61FF;border-color:#7B61FF}
+.h-time{font-size:11px;color:var(--color-text-tertiary);font-weight:500}
+.h-desc{font-size:13px;color:var(--color-text-primary);margin-top:1px;line-height:1.4}
+.field{margin-bottom:.875rem}
+.field label{display:block;font-size:12px;color:var(--color-text-secondary);margin-bottom:5px;font-weight:500}
+input[type=number],
+input[type=datetime-local],
+textarea{
+  width:100%;
+  padding:12px 14px;
+  border:.5px solid var(--color-border-secondary);
+  border-radius:var(--border-radius-md);
+  background:var(--color-background-primary);
+  color:var(--color-text-primary);
+  outline:none;
+  transition:border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+
+textarea{
+  resize:vertical;
+  min-height:80px;
+  font-family:var(--font-sans);
+  font-size:14px;
+}
+
+input[type=number]:focus,
+input[type=datetime-local]:focus,
+textarea:focus{
+  border-color:#7B61FF;
+  box-shadow:0 0 0 3px rgba(123,97,255,.12);
+}
+button{
+  transition:transform .06s ease, opacity .15s ease, background .15s ease;
+}
+
+button:active{
+  transform:scale(.99);
+}
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+.tab:focus-visible,
+.mode-c:focus-visible{
+  border-color:#7B61FF;
+  background:#EEF0FF;
+}
+
+.ob-choice:hover{
+  border-color:#7B61FF;
+  background:#EEF0FF;
+}
+
+.ob-choice.sel{
+  border-color:#7B61FF;
+  background:#EEF0FF;
+  box-shadow:0 0 0 2px rgba(123,97,255,.08);
+}
+.tool-row:focus-visible,
+.mood-btn:focus-visible{
+  outline:none;
+  box-shadow:0 0 0 3px rgba(123,97,255,.18);
+}
+
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mode-c{border:.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:12px;cursor:pointer;transition:all .15s;background:var(--color-background-primary)}
+.mode-c.sel{
+  border-color:#7B61FF;
+  background:#EEF0FF;
+  box-shadow:0 0 0 2px rgba(123,97,255,.08);
+}
+.mode-c-title{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:2px}
+.mode-c-sub{font-size:11px;color:var(--color-text-tertiary)}
+.mode-c.sel .mode-c-title{color:#3D2BB5}
+.go-btn{width:100%;padding:12px;background:#7B61FF;color:white;border:none;border-radius:var(--border-radius-md);font-family:var(--font-sans);font-size:15px;font-weight:500;cursor:pointer;transition:opacity .15s;margin-top:.25rem}
+.go-btn:hover{opacity:.88}
+.range-row{display:flex;align-items:center;gap:10px}
+.range-row input[type=range]{flex:1}
+.range-val{font-size:13px;font-weight:500;color:#7B61FF;min-width:34px;text-align:right}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:.5px solid var(--color-border-tertiary)}
+.settings-row:last-child{border:none}
+.settings-lbl{font-size:13px;color:var(--color-text-primary)}
+.settings-sub{font-size:11px;color:var(--color-text-tertiary);margin-top:1px}
+.settings-val{font-size:13px;font-weight:500;color:var(--color-text-secondary)}
+.danger-btn{width:100%;padding:10px;background:transparent;color:#E24B4A;border:.5px solid rgba(226,75,74,.3);border-radius:var(--border-radius-md);font-family:var(--font-sans);font-size:13px;font-weight:500;cursor:pointer;margin-top:.5rem;transition:background .15s}
+.danger-btn:hover{background:#FCEBEB}
+.breath-box{background:#EEF0FF;border:.5px solid #A594F9;border-radius:var(--border-radius-lg);padding:1.5rem;text-align:center;margin-bottom:.75rem}
+.breath-ring{width:90px;height:90px;border-radius:50%;border:2.5px solid #7B61FF;background:white;margin:.625rem auto .875rem;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:#3D2BB5;transition:transform 1s ease}
+.close-lnk{font-size:12px;color:#7B61FF;cursor:pointer;text-decoration:underline;background:none;border:none;font-family:var(--font-sans)}
+.toast{
+  position:fixed;
+  bottom:calc(var(--safe-bottom) + 18px);
+  left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(12px);
+  border:.5px solid var(--color-border-secondary);
+  border-radius:14px;
+  padding:10px 16px;
+  font-size:13px;
+  font-weight:500;
+  color:var(--color-text-primary);
+  transition:transform .28s ease;
+  z-index:99;
+  white-space:nowrap;
+  box-shadow:var(--shadow-md);
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.big-money{font-size:44px;font-weight:500;color:var(--color-text-primary);line-height:1;letter-spacing:-1px}
+.proj-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:.5px solid var(--color-border-tertiary)}
+.proj-row:last-child{border:none}
+.proj-lbl{font-size:13px;color:var(--color-text-secondary)}
+.proj-val{font-size:14px;font-weight:500;color:var(--color-text-primary)}
+.proj-val.accent{color:#7B61FF}
+.prog-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.prog-lbl{font-size:12px;color:var(--color-text-secondary);min-width:64px}
+.prog-track{flex:1;background:var(--color-background-secondary);border-radius:99px;height:6px;overflow:hidden}
+.prog-fill{height:100%;border-radius:99px;background:#7B61FF;transition:width .5s ease}
+.prog-val{font-size:12px;font-weight:500;color:var(--color-text-primary);min-width:28px;text-align:right}
+.mood-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-bottom:1rem}
+.mood-btn{border:.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:.625rem .25rem;text-align:center;cursor:pointer;background:var(--color-background-primary);font-family:var(--font-sans);transition:all .15s}
+.mood-btn:hover{background:var(--color-background-secondary)}
+.mood-btn.sel{border-color:#7B61FF;background:#EEF0FF}
+.mood-emoji{font-size:22px;display:block;margin-bottom:3px}
+.mood-lbl{font-size:10px;color:var(--color-text-secondary)}
+.mood-btn.sel .mood-lbl{color:#3D2BB5;font-weight:500}
+.diary-entry{padding:10px 0;border-bottom:.5px solid var(--color-border-tertiary)}
+.diary-entry:last-child{border:none}
+.diary-date{font-size:11px;color:var(--color-text-tertiary);margin-bottom:3px}
+.diary-mood-row{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.diary-emoji{font-size:16px}
+.diary-mood-name{font-size:12px;font-weight:500;color:var(--color-text-secondary)}
+.diary-note{font-size:13px;color:var(--color-text-primary);line-height:1.4}
+.timer-box{text-align:center;padding:1.5rem 1rem;background:#FAEEDA;border:.5px solid #EF9F27;border-radius:var(--border-radius-lg);margin-bottom:.75rem}
+.timer-num{font-size:56px;font-weight:500;color:#412402;line-height:1;letter-spacing:-2px}
+.timer-lbl{font-size:13px;color:#633806;margin-top:4px;margin-bottom:1rem}
+.timer-msg{font-size:13px;color:#412402;line-height:1.5;margin-bottom:1rem;font-weight:500}
+.timer-cancel{background:none;border:.5px solid rgba(65,36,2,.3);border-radius:var(--border-radius-md);padding:8px 20px;font-family:var(--font-sans);font-size:13px;color:#633806;cursor:pointer}
+.chart-wrap{width:100%;overflow-x:auto}
+.chart-inner{min-width:300px;height:120px;display:flex;align-items:flex-end;gap:3px;padding:0 2px}
+.chart-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0}
+.chart-bar{width:100%;background:#7B61FF;border-radius:3px 3px 0 0;min-height:0}
+.chart-bar.empty{background:var(--color-background-secondary)}
+.chart-x{display:flex;gap:3px;padding:0 2px;margin-top:2px;min-width:300px}
+.chart-x-lbl{flex:1;font-size:9px;color:var(--color-text-tertiary);text-align:center}
+.craving-timer-start{width:100%;padding:12px;background:#FAEEDA;color:#412402;border:.5px solid #EF9F27;border-radius:var(--border-radius-md);font-family:var(--font-sans);font-size:14px;font-weight:500;cursor:pointer;margin-bottom:7px;transition:background .15s}
+.craving-timer-start:hover{background:#FAC775}
+.no-data{font-size:12px;color:var(--color-text-tertiary);text-align:center;padding:1rem 0}
+.ob-screen{display:none;flex-direction:column;min-height:480px;animation:fadeIn .3s ease}
+.ob-screen.on{display:flex}
+@keyframes fadeIn{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:translateX(0)}}
+.ob-pips{display:flex;gap:5px;margin-bottom:1.5rem}
+.ob-pip{height:3px;flex:1;border-radius:99px;background:var(--color-background-secondary);transition:background .3s}
+.ob-pip.done{background:#7B61FF}.ob-pip.active{background:#A594F9}
+.ob-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.ob-back,.ob-skip{background:none;border:none;cursor:pointer;font-size:13px;color:var(--color-text-tertiary);font-family:var(--font-sans);padding:4px 0}
+.ob-step{font-size:11px;color:var(--color-text-tertiary);font-weight:500}
+.ob-illo{width:88px;height:88px;border-radius:50%;margin:0 auto 1.25rem;display:flex;align-items:center;justify-content:center;font-size:40px;background:#EEF0FF}
+.ob-eyebrow{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:#7B61FF;text-align:center;margin-bottom:.375rem}
+.ob-title{font-size:22px;font-weight:500;color:var(--color-text-primary);text-align:center;line-height:1.2;letter-spacing:-.3px;margin-bottom:.625rem}
+.ob-body{font-size:13px;color:var(--color-text-secondary);text-align:center;line-height:1.65;margin-bottom:auto;padding-bottom:1.25rem}
+.ob-choices{display:flex;flex-direction:column;gap:8px;margin-bottom:auto;padding-bottom:1.25rem}
+.ob-choice{border:.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:.875rem 1rem;cursor:pointer;transition:all .15s;background:var(--color-background-primary);display:flex;align-items:center;gap:10px}
+.ob-choice:hover,.ob-choice.sel{border-color:#7B61FF;background:#EEF0FF}
+.ob-choice-icon{font-size:22px;flex-shrink:0}
+.ob-choice-title{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.ob-choice-sub{font-size:11px;color:var(--color-text-tertiary);margin-top:2px}
+.ob-choice.sel .ob-choice-title{color:#3D2BB5}
+.ob-form-wrap{display:flex;flex-direction:column;margin-bottom:auto;padding-bottom:1.25rem}
+.ob-actions{display:flex;flex-direction:column;gap:7px;padding-top:.25rem}
+.ob-primary{width:100%;padding:13px;background:#7B61FF;color:white;border:none;border-radius:var(--border-radius-md);font-family:var(--font-sans);font-size:15px;font-weight:500;cursor:pointer;transition:opacity .15s}
+.ob-primary:hover{opacity:.88}
+.ob-legal{font-size:10px;color:var(--color-text-tertiary);text-align:center;line-height:1.5}
+.ob-summary{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:1rem;margin-bottom:auto}
+.ob-sum-title{font-size:11px;font-weight:500;color:var(--color-text-tertiary);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.625rem}
+.ob-sum-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:.5px solid var(--color-border-tertiary)}
+.ob-sum-row:last-child{border:none}
+.ob-sum-lbl{font-size:13px;color:var(--color-text-secondary)}
+.ob-sum-val{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.ob-sum-val.green{color:#7B61FF}
+@media (max-width: 380px){
+  .metric-grid{
+    grid-template-columns:1fr;
+  }
+
+  .badge-grid{
+    grid-template-columns:repeat(2, minmax(0,1fr));
+  }
+
+  .ring-wrap,
+  .ring-svg{
+    width:124px;
+    height:124px;
+  }
+
+  .ring-num{
+    font-size:34px;
+  }
+
+  .big-money{
+    font-size:36px;
+  }
+
+  .timer-num{
+    font-size:46px;
+  }
+
+  .ob-title{
+    font-size:20px;
+  }
+}
+</style>
+</head>
+<body>
+<h2 class="sr-only">Vape Free — app para dejar el vapeo</h2>
+
+<div class="app" id="root">
+  <div class="hdr">
+    <div class="logo"><span style="color:#1A1A2E">vape</span><em>free</em></div>
+    <div class="sync-wrap"><div class="sync-dot" id="sync-dot"></div><span class="sync-lbl" id="sync-lbl">—</span></div>
+  </div>
+  <div id="view"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY='vapefree_v1';
+const HEALTH=[{h:.33,t:'20 min',d:'Frecuencia cardíaca vuelve a la normalidad'},{h:2,t:'2 h',d:'Nicotina empieza a salir de la sangre'},{h:12,t:'12 h',d:'CO en sangre baja a niveles normales'},{h:24,t:'1 día',d:'Olfato y gusto mejoran notablemente'},{h:72,t:'3 días',d:'Nicotina desaparece del cuerpo por completo'},{h:168,t:'1 semana',d:'Menos tos, más energía y capacidad pulmonar'},{h:336,t:'2 semanas',d:'Circulación y función pulmonar mejoran'},{h:720,t:'1 mes',d:'Menor riesgo de infecciones respiratorias'},{h:2160,t:'3 meses',d:'Función pulmonar recuperada notablemente'},{h:8760,t:'1 año',d:'Riesgo cardíaco reducido a la mitad'}];
+const BADGES=[{n:'1 hora',icon:'⭐',h:1},{n:'1 día',icon:'🌱',h:24},{n:'1 semana',icon:'🔥',h:168},{n:'2 semanas',icon:'💪',h:336},{n:'1 mes',icon:'🏆',h:720},{n:'Ahorrador',icon:'💰',money:5000},{n:'3 meses',icon:'🎖️',h:2160},{n:'1 año',icon:'👑',h:8760}];
+const MILESTONES=[{h:1,n:'Primera hora'},{h:24,n:'1 día libre'},{h:72,n:'3 días'},{h:168,n:'Primera semana'},{h:336,n:'2 semanas'},{h:720,n:'1 mes'},{h:2160,n:'3 meses'},{h:8760,n:'1 año'}];
+const EQUIV=[{name:'Spotify Premium',clp:5990},{name:'Café en cafetería',clp:3500},{name:'Pizza entera',clp:12000},{name:'Libro nuevo',clp:10000},{name:'Entrada al cine',clp:6500},{name:'Sushi para 1',clp:15000},{name:'Netflix (1 mes)',clp:8990},{name:'Audífonos básicos',clp:25000}];
+const MOODS=[null,{emoji:'😞',name:'Muy mal'},{emoji:'😕',name:'Mal'},{emoji:'😐',name:'Regular'},{emoji:'🙂',name:'Bien'},{emoji:'😄',name:'Muy bien'}];
+
+let S={mode:'quit',startTs:null,dailyPuffs:30,reducePct:20,monthlySpend:15000,puffsLog:[],cravings:0,cravingLog:[],diary:[]};
+let brTimer=null,brStep=0,ticker=null,editMode='quit';
+let obMode='quit', obSnap=null;
+let selectedMood=0,timerInterval=null,timerEnd=0;
+
+function merge(d){return{mode:d.mode||'quit',startTs:d.startTs||null,dailyPuffs:d.dailyPuffs||30,reducePct:d.reducePct||20,monthlySpend:d.monthlySpend!==undefined?d.monthlySpend:15000,puffsLog:d.puffsLog||[],cravings:d.cravings||0,cravingLog:d.cravingLog||[],diary:d.diary||[]};}
+function setSync(ok,msg){document.getElementById('sync-dot').style.background=ok?'#7B61FF':'#B4B2A9';document.getElementById('sync-lbl').textContent=msg;}
+function nowLocal(){const n=new Date();return new Date(n.getTime()-n.getTimezoneOffset()*60000).toISOString().slice(0,16);}
+function g(id){return document.getElementById(id);}
+function showToast(msg){const t=g('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+
+let saveTimer=null;
+function cloudSave(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>{
+    try{
+      localStorage.setItem(KEY,JSON.stringify(S));
+      setSync(true,'guardado');
+    }catch(e){
+      setSync(false,'sin espacio');
+      console.warn('localStorage error:',e);
+    }
+  },400);
+}
+
+/* ── INIT ── */
+function init(){
+  setSync(false,'—');
+  let found=false;
+  try{
+    const raw=localStorage.getItem(KEY);
+    if(raw){const p=JSON.parse(raw);if(p&&p.startTs){S=merge(p);found=true;}}
+  }catch(e){found=false;}
+  if(found){setSync(true,'guardado');renderApp();showToast('✓ Plan cargado');}
+  else{renderOnboarding(0);}
+}
+
+/* ── ONBOARDING ── */
+function pips(active,total=4){return Array.from({length:total},(_,i)=>`<div class="ob-pip ${i<active?'done':i===active?'active':''}"></div>`).join('');}
+
+function renderOnboarding(n){
+  const html=[ob0,ob1,ob2,ob3][n]();
+  g('view').innerHTML=html;
+  const dt=g('ob-date');if(dt){dt.value=nowLocal();dt.max=nowLocal();}
+  const sl=g('ob-reduce');if(sl)sl.oninput=()=>{g('ob-reduce-val').textContent=sl.value+'%';};
+}
+
+function ob0(){return `<div class="ob-screen on"><div class="ob-pips">${pips(0)}</div><div class="ob-illo">🌿</div><div class="ob-eyebrow">Bienvenido</div><div class="ob-title">Tu vida vape free empieza hoy</div><div class="ob-body">Vape Free te acompaña en cada paso — sin juicios, sin presión. Tú decides el ritmo.</div><div class="ob-actions"><button class="ob-primary" onclick="renderOnboarding(1)">Empezar →</button><div class="ob-legal">Al continuar aceptas los términos de uso y política de privacidad.</div></div></div>`;}
+
+function ob1(){return `<div class="ob-screen on"><div class="ob-pips">${pips(1)}</div><div class="ob-nav"><button class="ob-back" onclick="renderOnboarding(0)">← Atrás</button><span class="ob-step">1 de 3</span><button class="ob-skip" onclick="renderOnboarding(2)">Saltar</button></div><div class="ob-title">¿Cómo quieres hacerlo?</div><div class="ob-choices"><div class="ob-choice ${obMode==='quit'?'sel':''}" onclick="obPickMode('quit')"><span class="ob-choice-icon">✂️</span><div><div class="ob-choice-title">Dejar de golpe</div><div class="ob-choice-sub">Corte inmediato. Requiere fuerza de voluntad.</div></div></div><div class="ob-choice ${obMode==='reduce'?'sel':''}" onclick="obPickMode('reduce')"><span class="ob-choice-icon">📉</span><div><div class="ob-choice-title">Reducción gradual</div><div class="ob-choice-sub">Baja los puffs semana a semana hasta cero.</div></div></div></div><div class="ob-actions"><button class="ob-primary" onclick="renderOnboarding(2)">Continuar →</button></div></div>`;}
+
+function ob2(){return `<div class="ob-screen on"><div class="ob-pips">${pips(2)}</div><div class="ob-nav"><button class="ob-back" onclick="renderOnboarding(1)">← Atrás</button><span class="ob-step">2 de 3</span><div></div></div><div class="ob-eyebrow">Tu hábito actual</div><div class="ob-title">Cuéntanos tu punto de partida</div><div class="ob-form-wrap"><div class="field"><label>Puffs diarios actuales</label><input type="number" id="ob-puffs" value="30" min="1" max="500"/></div><div class="field" style="display:${obMode==='reduce'?'block':'none'}" id="ob-reduce-wrap"><label>Reducción semanal: <span id="ob-reduce-val" style="color:#7B61FF;font-weight:500">20%</span></label><div class="range-row"><input type="range" id="ob-reduce" min="1" max="50" step="1" value="20"/></div></div><div class="field"><label>Gasto mensual en vape (CLP)</label><input type="number" id="ob-spend" value="15000" min="0"/></div><div class="field"><label>¿Cuándo fue tu último vapeo?</label><input type="datetime-local" id="ob-date"/></div></div><div class="ob-actions"><button class="ob-primary" onclick="goToSummary()">Ver mi plan →</button></div></div>`;}
+
+function ob3(){
+  const d=obSnap||{puffs:30,spend:15000,reduce:20,dt:nowLocal()};
+  return `<div class="ob-screen on"><div class="ob-pips">${pips(3)}</div><div class="ob-nav"><button class="ob-back" onclick="renderOnboarding(2)">← Atrás</button><span class="ob-step">3 de 3</span><div></div></div><div class="ob-eyebrow">Tu plan</div><div class="ob-title">Esto es lo que vas a lograr</div><div class="ob-summary"><div class="ob-sum-title">Resumen</div><div class="ob-sum-row"><span class="ob-sum-lbl">Modo</span><span class="ob-sum-val">${obMode==='quit'?'Dejar de golpe':'Reducción gradual'}</span></div><div class="ob-sum-row"><span class="ob-sum-lbl">Puffs actuales</span><span class="ob-sum-val">${d.puffs}/día</span></div>${obMode==='reduce'?`<div class="ob-sum-row"><span class="ob-sum-lbl">Reducción semanal</span><span class="ob-sum-val">${d.reduce}%</span></div>`:''}<div class="ob-sum-row"><span class="ob-sum-lbl">Ahorro mensual</span><span class="ob-sum-val green">$${Number(d.spend).toLocaleString('es-CL')}</span></div><div class="ob-sum-row"><span class="ob-sum-lbl">Ahorro anual</span><span class="ob-sum-val green">$${(Number(d.spend)*12).toLocaleString('es-CL')}</span></div><div class="ob-sum-row"><span class="ob-sum-lbl">Puffs evitados/mes</span><span class="ob-sum-val green">${(Number(d.puffs)*30).toLocaleString('es-CL')}</span></div></div><div style="font-size:13px;color:var(--color-text-secondary);line-height:1.6;margin:.75rem 0 0">Las recaídas son parte del proceso — volver a empezar también es un logro.</div><div class="ob-actions" style="margin-top:1rem"><button class="ob-primary" onclick="finishOnboarding()">¡Empezar mi plan! 🌱</button></div></div>`;}
+
+function obPickMode(m){
+  obMode=m;renderOnboarding(1);
+}
+
+function goToSummary(){
+  obSnap={
+    puffs:parseInt(g('ob-puffs')?.value)||30,
+    spend:parseFloat(g('ob-spend')?.value)||15000,
+    reduce:parseInt(g('ob-reduce')?.value)||20,
+    dt:g('ob-date')?.value||nowLocal()
+  };
+  renderOnboarding(3);
+}
+
+function finishOnboarding(){
+  const d=obSnap||{puffs:30,spend:15000,reduce:20,dt:nowLocal()};
+  S=merge({mode:obMode,startTs:new Date(d.dt).getTime(),dailyPuffs:d.puffs,reducePct:d.reduce,monthlySpend:d.spend});
+  cloudSave();
+  renderApp();
+  showToast('🌱 ¡Plan activado!');
+}
+
+/* ── APP ── */
+function renderApp(){
+  g('view').innerHTML=`
+<div class="tab-bar">
+  <button class="tab on" onclick="goTab('hoy')">Hoy</button>
+  <button class="tab" onclick="goTab('progreso')">Progreso</button>
+  <button class="tab" onclick="goTab('dinero')">Dinero</button>
+  <button class="tab" onclick="goTab('diario')">Diario</button>
+  <button class="tab" onclick="goTab('estadisticas')">Stats</button>
+  <button class="tab" onclick="goTab('plan')">Plan</button>
+  <button class="tab" onclick="goTab('logros')">Logros</button>
+  <button class="tab" onclick="goTab('salud')">Salud</button>
+  <button class="tab" onclick="goTab('ajustes')">Ajustes</button>
+</div>
+
+<div class="panel on" id="hoy-panel">
+  <div class="hero">
+    <div id="m-pill" style="display:none;margin-bottom:.625rem"><span class="pill" id="m-pill-txt"></span></div>
+    <div class="ring-wrap"><svg class="ring-svg" viewBox="0 0 140 140"><circle class="ring-bg" cx="70" cy="70" r="58"/><circle class="ring-fill" id="ring-el" cx="70" cy="70" r="58" stroke-dasharray="364.42" stroke-dashoffset="364.42"/></svg><div class="ring-inner"><div class="ring-num" id="days-num">0</div><div class="ring-lbl" id="days-lbl">días</div></div></div>
+    <div class="streak-row" id="streak-row"></div>
+  </div>
+  <div class="metric-grid">
+    <div class="met"><div class="met-lbl">Ahorrado</div><div class="met-val" id="m-money">$0</div><div class="met-sub">pesos CLP</div></div>
+    <div class="met"><div class="met-lbl">Horas libres</div><div class="met-val" id="m-hours">0</div><div class="met-sub">sin vapear</div></div>
+    <div class="met"><div class="met-lbl">Puffs evitados</div><div class="met-val" id="m-avoided">0</div><div class="met-sub">estimado</div></div>
+    <div class="met"><div class="met-lbl">Antojos vencidos</div><div class="met-val" id="m-cravings">0</div><div class="met-sub">registrados</div></div>
+  </div>
+  <div class="card" id="puff-card">
+    <div class="puff-hdr"><div class="sec" style="margin:0">Puffs hoy</div><div class="puff-ct ok" id="puff-ct">0/—</div></div>
+    <div class="puff-track"><div class="puff-fill ok" id="puff-bar" style="width:0%"></div></div>
+    <button class="log-btn" onclick="logPuff()">+ Registrar puff</button>
+    <button class="craving-timer-start" onclick="startCravingTimer()">⏱ Antojo — espera 5 minutos</button>
+    <button class="panic-btn" onclick="openBreath()">Antojo fuerte — ayúdame ahora</button>
+  </div>
+  <div id="timer-box-hoy" style="display:none"><div class="timer-box"><div class="timer-num" id="timer-display">5:00</div><div class="timer-lbl">minutos restantes</div><div class="timer-msg" id="timer-msg">Los antojos duran menos de 5 minutos. Solo aguanta este momento.</div><button class="timer-cancel" onclick="cancelTimer()">Ya pasó el antojo ✓</button></div></div>
+</div>
+
+<div class="panel" id="progreso-panel">
+  <div class="card"><div class="sec">Tu avance hacia metas</div><div id="prog-milestone" style="display:none;margin-bottom:.875rem"><span class="pill" id="prog-milestone-txt"></span></div><div id="prog-bars"></div></div>
+  <div class="card"><div class="sec">Últimos 14 días</div><div style="display:flex;gap:5px;flex-wrap:wrap" id="prog-week-dots"></div><div style="font-size:12px;color:var(--color-text-tertiary);margin-top:.75rem" id="prog-streak-lbl"></div></div>
+  <div class="metric-grid">
+    <div class="met"><div class="met-lbl">Días sin vapear</div><div class="met-val" id="prog-days">0</div><div class="met-sub">completos</div></div>
+    <div class="met"><div class="met-lbl">Horas totales</div><div class="met-val" id="prog-hours">0</div><div class="met-sub">sin nicotina</div></div>
+    <div class="met"><div class="met-lbl">Puffs evitados</div><div class="met-val" id="prog-avoided">0</div><div class="met-sub">estimado</div></div>
+    <div class="met"><div class="met-lbl">Antojos vencidos</div><div class="met-val" id="prog-cravings">0</div><div class="met-sub">registrados</div></div>
+  </div>
+  <div class="card"><button class="log-btn" style="margin-bottom:0" onclick="logCraving()">💪 Resistí un antojo</button></div>
+</div>
+
+<div class="panel" id="dinero-panel">
+  <div class="card" style="text-align:center;padding:1.5rem 1.25rem"><div class="sec">Total ahorrado</div><div class="big-money" id="d-total">$0</div><div style="font-size:13px;color:var(--color-text-secondary);margin-top:4px" id="d-sub">desde que empezaste</div></div>
+  <div class="card"><div class="sec">Proyecciones</div><div class="proj-row"><span class="proj-lbl">Esta semana</span><span class="proj-val accent" id="d-week">$0</span></div><div class="proj-row"><span class="proj-lbl">Este mes</span><span class="proj-val accent" id="d-month">$0</span></div><div class="proj-row"><span class="proj-lbl">En 3 meses</span><span class="proj-val" id="d-3m">$0</span></div><div class="proj-row"><span class="proj-lbl">En 6 meses</span><span class="proj-val" id="d-6m">$0</span></div><div class="proj-row"><span class="proj-lbl">En 1 año</span><span class="proj-val" id="d-year">$0</span></div></div>
+  <div class="card"><div class="sec">¿Qué podrías comprar?</div><div id="d-equiv"></div></div>
+</div>
+
+<div class="panel" id="diario-panel">
+  <div class="card"><div class="sec">¿Cómo te sientes hoy?</div>
+    <div class="mood-grid"><button class="mood-btn" onclick="selMood(1)"><span class="mood-emoji">😞</span><span class="mood-lbl">Muy mal</span></button><button class="mood-btn" onclick="selMood(2)"><span class="mood-emoji">😕</span><span class="mood-lbl">Mal</span></button><button class="mood-btn" onclick="selMood(3)"><span class="mood-emoji">😐</span><span class="mood-lbl">Regular</span></button><button class="mood-btn" onclick="selMood(4)"><span class="mood-emoji">🙂</span><span class="mood-lbl">Bien</span></button><button class="mood-btn" onclick="selMood(5)"><span class="mood-emoji">😄</span><span class="mood-lbl">Muy bien</span></button></div>
+    <div class="field" style="margin-bottom:.75rem"><label>Nota del día (opcional)</label><textarea id="diary-note" placeholder="¿Cómo estuvo el día?"></textarea></div>
+    <button class="go-btn" onclick="saveDiaryEntry()">Guardar entrada</button>
+  </div>
+  <div class="card"><div class="sec">Historial</div><div id="diary-list"><div class="no-data">Aún no hay entradas.</div></div></div>
+</div>
+
+<div class="panel" id="estadisticas-panel">
+  <div class="card"><div class="sec">Puffs por hora del día</div><div id="chart-no-data" class="no-data">Registra puffs para ver el gráfico</div><div id="chart-container" style="display:none"><div class="chart-wrap"><div class="chart-inner" id="chart-bars"></div></div><div class="chart-wrap"><div class="chart-x" id="chart-x-labels"></div></div></div><div style="font-size:11px;color:var(--color-text-tertiary);margin-top:.75rem" id="chart-insight"></div></div>
+  <div class="card"><div class="sec">Antojos por día de la semana</div><div id="craving-chart-container" style="display:none"><div class="chart-wrap"><div class="chart-inner" id="craving-bars"></div></div><div class="chart-wrap"><div class="chart-x" id="craving-x-labels"></div></div></div><div id="craving-no-data" class="no-data">Registra antojos para ver el gráfico</div></div>
+  <div class="card"><div class="sec">Estado de ánimo promedio</div><div id="mood-stats"><div class="no-data">Registra tu ánimo diariamente</div></div></div>
+</div>
+
+<div class="panel" id="plan-panel">
+  <div class="card"><div class="sec">Plan de reducción</div><div id="plan-rows"></div></div>
+  <div class="card"><div class="sec">Herramientas</div>
+    <div class="tool-row" onclick="startCravingTimer();goTab('hoy')"><span class="tool-icon">⏱</span><div><div class="tool-name">Espera 5 minutos</div><div class="tool-desc">El antojo pasa solo — cronométralo</div></div></div>
+    <div class="tool-row" onclick="openBreath()"><span class="tool-icon">🫁</span><div><div class="tool-name">Respiración 4-7-8</div><div class="tool-desc">Calma el antojo en 60 segundos</div></div></div>
+    <div class="tool-row" onclick="logCraving()"><span class="tool-icon">💪</span><div><div class="tool-name">Resistí un antojo</div><div class="tool-desc">Suma al contador</div></div></div>
+    <div class="tool-row" onclick="sendPrompt('Tengo un antojo fuerte de vapear ahora mismo. Dame 3 estrategias concretas para resistirlo en los próximos 5 minutos.')"><span class="tool-icon">💬</span><div><div class="tool-name">Apoyo inmediato ↗</div><div class="tool-desc">Estrategias para el antojo de ahora</div></div></div>
+    <div class="tool-row" onclick="sendPrompt('Estoy dejando el vape. Dame 5 hábitos alternativos concretos para reemplazar el impulso de vapear.')"><span class="tool-icon">🌱</span><div><div class="tool-name">Hábitos alternativos ↗</div><div class="tool-desc">Qué hacer en lugar de vapear</div></div></div>
+    <div class="tool-row" onclick="sendPrompt('Explícame los síntomas de abstinencia al dejar la nicotina en las primeras 2 semanas, cuánto duran y cómo manejarlos.')"><span class="tool-icon">🧠</span><div><div class="tool-name">Síntomas de abstinencia ↗</div><div class="tool-desc">Qué esperar y cómo manejarlo</div></div></div>
+  </div>
+  <div class="card" id="breath-card" style="display:none"><div class="breath-box"><div style="font-size:15px;font-weight:500;color:#3D2BB5" id="br-title">Inhala</div><div style="font-size:12px;color:#5B41DF;margin-top:2px" id="br-sub">4 segundos</div><div class="breath-ring" id="br-ring">Inhala</div><button class="close-lnk" onclick="closeBreath()">Cerrar</button></div></div>
+</div>
+
+<div class="panel" id="logros-panel"><div class="card"><div class="sec">Badges desbloqueados</div><div class="badge-grid" id="badge-grid"></div></div></div>
+<div class="panel" id="salud-panel"><div class="card"><div class="sec">Recuperación de tu cuerpo</div><div id="health-list"></div></div></div>
+
+<div class="panel" id="ajustes-panel">
+  <div class="card"><div class="sec">Configuración actual</div>
+    <div class="settings-row"><div><div class="settings-lbl">Modo</div><div class="settings-sub" id="cfg-mode">—</div></div></div>
+    <div class="settings-row"><div><div class="settings-lbl">Puffs diarios base</div></div><span class="settings-val" id="cfg-puffs">—</span></div>
+    <div class="settings-row" id="cfg-reduce-row"><div><div class="settings-lbl">Reducción semanal</div></div><span class="settings-val" id="cfg-reduce">—</span></div>
+    <div class="settings-row"><div><div class="settings-lbl">Gasto mensual</div></div><span class="settings-val" id="cfg-spend">—</span></div>
+    <div class="settings-row"><div><div class="settings-lbl">Fecha de inicio</div><div class="settings-sub" id="cfg-date">—</div></div></div>
+  </div>
+  <div class="card"><div class="sec">Editar valores</div>
+    <div class="field"><label>Modo</label><div class="mode-grid"><div class="mode-c" id="e-mc-quit" onclick="eSelMode('quit')"><div class="mode-c-title">Dejar ya</div><div class="mode-c-sub">Corte inmediato</div></div><div class="mode-c" id="e-mc-reduce" onclick="eSelMode('reduce')"><div class="mode-c-title">Reducción gradual</div><div class="mode-c-sub">Baja puffs por semana</div></div></div></div>
+    <div class="field"><label>Puffs diarios base</label><input type="number" id="e-puffs" min="1" max="300"/></div>
+    <div class="field"><label>Gasto mensual (CLP)</label><input type="number" id="e-spend" min="0"/></div>
+    <div class="field" id="e-reduce-field"><label>Reducción semanal: <span id="e-reduce-val" style="color:#7B61FF;font-weight:500">20%</span></label><div class="range-row"><input type="range" id="e-reduce" min="1" max="50" step="1"/></div></div>
+    <div class="field"><label>Fecha de inicio del plan</label><input type="datetime-local" id="e-date"/></div>
+    <button class="go-btn" onclick="saveSettings()">Guardar cambios</button>
+  </div>
+  <div class="card"><div class="sec">Datos</div>
+    <div style="font-size:12px;color:var(--color-text-tertiary);margin-bottom:.75rem;line-height:1.5">Tu progreso se guarda y sincroniza automáticamente.</div>
+    <button class="danger-btn" onclick="resetAll()">Reiniciar todo el progreso</button>
+  </div>
+</div>`;
+
+  g('e-reduce').oninput=()=>{g('e-reduce-val').textContent=g('e-reduce').value+'%';};
+  renderAll();
+  if(ticker)clearInterval(ticker);
+  ticker=setInterval(renderAll,60000);
+}
+
+function goTab(name){
+  const names=['hoy','progreso','dinero','diario','estadisticas','plan','logros','salud','ajustes'];
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('on',names[i]===name));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  g(name+'-panel').classList.add('on');
+  if(name==='estadisticas')renderCharts();
+}
+
+function weekLimit(w){if(S.mode==='quit')return 0;return Math.max(1,Math.round(S.dailyPuffs*Math.pow(1-S.reducePct/100,w)));}
+function currentWeek(){return Math.max(0,Math.floor((Date.now()-S.startTs)/604800000));}
+function todayCount(){const s=new Date();s.setHours(0,0,0,0);return S.puffsLog.filter(t=>t>=s.getTime()).length;}
+function logPuff(){S.puffsLog.push(Date.now());cloudSave();renderAll();}
+function logCraving(){S.cravings++;S.cravingLog.push(Date.now());cloudSave();renderAll();showToast('💪 ¡Anotado!');}
+function selMood(n){selectedMood=n;document.querySelectorAll('.mood-btn').forEach((b,i)=>b.classList.toggle('sel',i===n-1));}
+function saveDiaryEntry(){
+  if(!selectedMood){showToast('Selecciona cómo te sientes');return;}
+  const note=g('diary-note').value.trim();
+  const today=new Date().toLocaleDateString('es-CL');
+  S.diary=S.diary.filter(e=>e.date!==today);
+  S.diary.unshift({date:today,ts:Date.now(),mood:selectedMood,note});
+  if(S.diary.length>90)S.diary=S.diary.slice(0,90);
+  cloudSave();selectedMood=0;
+  document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('sel'));
+  g('diary-note').value='';renderDiary();showToast('✓ Entrada guardada');
+}
+function renderDiary(){
+  const el=g('diary-list');if(!el)return;
+  if(!S.diary.length){el.innerHTML='<div class="no-data">Aún no hay entradas.</div>';return;}
+  el.innerHTML=S.diary.slice(0,20).map(e=>{const m=MOODS[e.mood]||MOODS[3];return `<div class="diary-entry"><div class="diary-date">${e.date}</div><div class="diary-mood-row"><span class="diary-emoji">${m.emoji}</span><span class="diary-mood-name">${m.name}</span></div>${e.note?`<div class="diary-note">${e.note}</div>`:''}</div>`;}).join('');
+}
+function renderCharts(){
+  const pl=S.puffsLog||[];const hb=new Array(24).fill(0);pl.forEach(ts=>{hb[new Date(ts).getHours()]++;});
+  const hasPuffs=pl.length>0;const maxP=Math.max(1,...hb);
+  g('chart-no-data').style.display=hasPuffs?'none':'block';
+  g('chart-container').style.display=hasPuffs?'block':'none';
+  if(hasPuffs){const peak=hb.indexOf(Math.max(...hb));g('chart-insight').textContent=`Tu hora de mayor consumo es las ${peak}:00 h.`;const sh=[0,3,6,9,12,15,18,21];let bars='',xh='';for(let h=0;h<24;h++){const v=hb[h];const p=Math.round((v/maxP)*100);bars+=`<div class="chart-bar-wrap"><div style="font-size:9px;color:var(--color-text-secondary);text-align:center;min-height:12px">${v||''}</div><div class="chart-bar${v===0?' empty':''}" style="height:${Math.max(p,v>0?8:0)}px;max-height:90px"></div></div>`;xh+=`<div class="chart-x-lbl">${sh.includes(h)?h+'h':''}</div>`;}g('chart-bars').innerHTML=bars;g('chart-x-labels').innerHTML=xh;}
+  const cl=S.cravingLog||[];const db=new Array(7).fill(0);const dn=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];cl.forEach(ts=>{db[new Date(ts).getDay()]++;});const hasCr=cl.length>0;const maxC=Math.max(1,...db);
+  g('craving-no-data').style.display=hasCr?'none':'block';g('craving-chart-container').style.display=hasCr?'block':'none';
+  if(hasCr){let cb='',cx='';for(let d=0;d<7;d++){const v=db[d];const p=Math.round((v/maxC)*100);cb+=`<div class="chart-bar-wrap"><div style="font-size:9px;color:var(--color-text-secondary);text-align:center;min-height:12px">${v||''}</div><div class="chart-bar${v===0?' empty':''}" style="height:${Math.max(p,v>0?8:0)}px;max-height:90px"></div></div>`;cx+=`<div class="chart-x-lbl">${dn[d]}</div>`;}g('craving-bars').innerHTML=cb;g('craving-x-labels').innerHTML=cx;}
+  const diary=S.diary||[];const me=g('mood-stats');
+  if(!diary.length){if(me)me.innerHTML='<div class="no-data">Registra tu ánimo diariamente</div>';return;}
+  const avg=(diary.reduce((a,e)=>a+e.mood,0)/diary.length).toFixed(1);const dist=new Array(6).fill(0);diary.forEach(e=>dist[e.mood]++);
+  if(me)me.innerHTML=`<div class="proj-row"><span class="proj-lbl">Promedio</span><span class="proj-val accent">${avg}/5 ${MOODS[Math.round(avg)]?.emoji||''}</span></div><div class="proj-row"><span class="proj-lbl">Entradas</span><span class="proj-val">${diary.length} días</span></div>${[5,4,3,2,1].map(m=>`<div class="proj-row"><span class="proj-lbl">${MOODS[m].emoji} ${MOODS[m].name}</span><span class="proj-val">${dist[m]||0} días</span></div>`).join('')}`;
+}
+function startCravingTimer(){if(timerInterval)return;timerEnd=Date.now()+5*60*1000;g('timer-box-hoy').style.display='block';g('puff-card').style.display='none';timerInterval=setInterval(tickTimer,1000);tickTimer();}
+function tickTimer(){const rem=Math.max(0,timerEnd-Date.now());const m=Math.floor(rem/60000);const s=Math.floor((rem%60000)/1000);g('timer-display').textContent=m+':'+(s<10?'0':'')+s;const msgs=['Los antojos duran menos de 5 minutos. Solo aguanta este momento.','Ya pasó más de 1 minuto. Vas muy bien.','Más de la mitad. ¡Estás ganando!','Solo un poco más. El antojo está cediendo.','¡Lo lograste! El antojo pasó.'];g('timer-msg').textContent=msgs[Math.min(Math.floor((5*60000-rem)/60000),4)];if(rem===0){clearInterval(timerInterval);timerInterval=null;showToast('🏆 ¡Superaste el antojo!');setTimeout(cancelTimer,2000);}}
+function cancelTimer(){clearInterval(timerInterval);timerInterval=null;g('timer-box-hoy').style.display='none';if(S.mode!=='quit'){g('puff-card').style.display='block';}}
+
+function renderAll(){
+  const now=Date.now();const totalHours=(now-S.startTs)/3600000;const totalDays=Math.floor((now-S.startTs)/86400000);const moneySaved=Math.round((totalDays/30)*S.monthlySpend);const lastM=MILESTONES.filter(m=>totalHours>=m.h).pop();
+  const set=(id,v)=>{const el=g(id);if(el)el.textContent=v;};
+  set('days-num',totalDays);set('days-lbl',totalDays===1?'día':'días');
+  const re=g('ring-el');if(re){const goal=totalDays<7?7:totalDays<14?14:totalDays<30?30:90;re.style.strokeDashoffset=Math.round(364.42*(1-Math.min(1,totalDays/goal)));}
+  const mp=g('m-pill');if(mp){if(lastM){mp.style.display='block';set('m-pill-txt','🏅 '+lastM.n+' alcanzado');}else mp.style.display='none';}
+  let dots='';for(let i=6;i>=0;i--){const d=totalDays-i;dots+=d<0?'<div class="s-dot empty"></div>':i===0?'<div class="s-dot today"></div>':'<div class="s-dot done"></div>';}
+  const sr=g('streak-row');if(sr)sr.innerHTML=dots;
+  set('m-money','$'+moneySaved.toLocaleString('es-CL'));set('m-hours',Math.floor(totalHours));set('m-avoided',Math.round(totalDays*S.dailyPuffs).toLocaleString('es-CL'));set('m-cravings',S.cravings);
+  const pc=g('puff-card');if(pc){if(S.mode==='quit'){pc.style.display='none';}else if(!timerInterval){pc.style.display='block';const wk=currentWeek();const lim=weekLimit(wk);const today=todayCount();const ratio=lim>0?Math.min(1,today/lim):0;const cls=ratio>=1?'over':ratio>=.75?'warn':'ok';const pct=g('puff-ct');if(pct){pct.textContent=today+'/'+lim;pct.className='puff-ct '+cls;}const pb=g('puff-bar');if(pb){pb.style.width=Math.round(ratio*100)+'%';pb.className='puff-fill '+cls;}}}
+  const pm=g('prog-milestone');if(pm){if(lastM){pm.style.display='block';set('prog-milestone-txt','🏅 '+lastM.n+' alcanzado');}else pm.style.display='none';}
+  const pb2=g('prog-bars');if(pb2)pb2.innerHTML=[{label:'1 semana',days:7},{label:'2 semanas',days:14},{label:'1 mes',days:30},{label:'3 meses',days:90},{label:'1 año',days:365}].map(gg=>{const pct=Math.min(100,Math.round((totalDays/gg.days)*100));return `<div class="prog-row"><span class="prog-lbl">${gg.label}</span><div class="prog-track"><div class="prog-fill" style="width:${pct}%"></div></div><span class="prog-val">${pct}%</span></div>`;}).join('');
+  let wdots='';for(let i=0;i<14;i++){const done=i<totalDays;const isT=i===totalDays;wdots+=`<div style="width:18px;height:18px;border-radius:4px;background:${done?'#7B61FF':isT?'#A594F9':'var(--color-background-secondary)'};border:.5px solid ${done||isT?'#7B61FF':'var(--color-border-tertiary)'}"></div>`;}
+  const pwd=g('prog-week-dots');if(pwd)pwd.innerHTML=wdots;
+  set('prog-streak-lbl',totalDays>=14?'¡Dos semanas completas!':totalDays===1?'1 día completado':totalDays+' días completados');
+  set('prog-days',totalDays);set('prog-hours',Math.floor(totalHours));set('prog-avoided',Math.round(totalDays*S.dailyPuffs).toLocaleString('es-CL'));set('prog-cravings',S.cravings);
+  set('d-total','$'+moneySaved.toLocaleString('es-CL'));set('d-sub',totalDays===0?'empezando hoy':totalDays===1?'en 1 día':'en '+totalDays+' días');
+  set('d-week','$'+Math.round(S.monthlySpend/4).toLocaleString('es-CL'));set('d-month','$'+S.monthlySpend.toLocaleString('es-CL'));set('d-3m','$'+(S.monthlySpend*3).toLocaleString('es-CL'));set('d-6m','$'+(S.monthlySpend*6).toLocaleString('es-CL'));set('d-year','$'+(S.monthlySpend*12).toLocaleString('es-CL'));
+  const de=g('d-equiv');if(de){const eq=EQUIV.map(e=>{const qty=Math.floor(moneySaved/e.clp);return qty>0?`<div class="proj-row"><span class="proj-lbl">${e.name}</span><span class="proj-val accent">${qty}x</span></div>`:''}).filter(Boolean).slice(0,5).join('');de.innerHTML=eq||'<div class="no-data">Sigue así — pronto aparecerán equivalencias</div>';}
+  const pl=g('plan-rows');if(pl){if(S.mode==='quit'){pl.innerHTML='<div class="plan-row"><span class="plan-wk">Hoy</span><div class="plan-bg"><div class="plan-fill" style="width:0%"></div></div><span class="plan-num">0 puffs</span><span class="curr-tag">Activo</span></div>';}else{const cw=currentWeek();let h='';for(let w=0;w<12;w++){const lim=weekLimit(w);const bp=S.dailyPuffs>0?Math.round((lim/S.dailyPuffs)*100):0;const isc=w===cw;h+=`<div class="plan-row"><span class="plan-wk">Sem ${w+1}</span><div class="plan-bg"><div class="plan-fill${isc?' curr':''}" style="width:${bp}%"></div></div><span class="plan-num">${lim} p/día</span>${isc?'<span class="curr-tag">Ahora</span>':''}</div>`;}pl.innerHTML=h;}}
+  const bg=g('badge-grid');if(bg)bg.innerHTML=BADGES.map(b=>{const un=b.h?totalHours>=b.h:moneySaved>=(b.money||0);return `<div class="badge ${un?'on':'off'}"><span class="badge-icon" style="font-size:22px">${b.icon}</span><div class="badge-name">${b.n}</div></div>`;}).join('');
+  const hl=g('health-list');if(hl)hl.innerHTML=HEALTH.map(item=>`<div class="h-row"><div class="h-dot ${totalHours>=item.h?'done':''}"></div><div><div class="h-time">${item.t}</div><div class="h-desc">${item.d}</div></div></div>`).join('');
+  set('cfg-mode',S.mode==='quit'?'Dejar ya':'Reducción gradual');set('cfg-puffs',S.dailyPuffs+' puffs/día');set('cfg-reduce',S.reducePct+'% por semana');set('cfg-spend','$'+S.monthlySpend.toLocaleString('es-CL')+'/mes');
+  const cd=g('cfg-date');if(cd)cd.textContent=new Date(S.startTs).toLocaleDateString('es-CL',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  const crr=g('cfg-reduce-row');if(crr)crr.style.display=S.mode==='reduce'?'flex':'none';
+  const ep=g('e-puffs');if(ep)ep.value=S.dailyPuffs;const es=g('e-spend');if(es)es.value=S.monthlySpend;const er=g('e-reduce');if(er)er.value=S.reducePct;const erv=g('e-reduce-val');if(erv)erv.textContent=S.reducePct+'%';
+  editMode=S.mode;const emq=g('e-mc-quit');if(emq)emq.classList.toggle('sel',S.mode==='quit');const emr=g('e-mc-reduce');if(emr)emr.classList.toggle('sel',S.mode==='reduce');const erf=g('e-reduce-field');if(erf)erf.style.display=S.mode==='reduce'?'block':'none';
+  const ed=g('e-date');if(ed){const edate=new Date(S.startTs);ed.value=new Date(edate.getTime()-edate.getTimezoneOffset()*60000).toISOString().slice(0,16);}
+  renderDiary();
+}
+
+function eSelMode(m){editMode=m;const eq=g('e-mc-quit');if(eq)eq.classList.toggle('sel',m==='quit');const er=g('e-mc-reduce');if(er)er.classList.toggle('sel',m==='reduce');const ef=g('e-reduce-field');if(ef)ef.style.display=m==='reduce'?'block':'none';}
+function saveSettings(){
+  S.mode=editMode;
+  const ep=g('e-puffs');if(ep)S.dailyPuffs=parseInt(ep.value)||S.dailyPuffs;
+  const es=g('e-spend');if(es)S.monthlySpend=parseFloat(es.value)||S.monthlySpend;
+  const er=g('e-reduce');if(er)S.reducePct=parseInt(er.value)||S.reducePct;
+  const nd=g('e-date');if(nd&&nd.value)S.startTs=new Date(nd.value).getTime();
+  cloudSave();renderAll();showToast('✓ Cambios guardados y sincronizados');
+}
+function resetAll(){
+  if(!confirm('¿Reiniciar todo el progreso?'))return;
+  try{localStorage.removeItem(KEY);}catch(e){}
+  S=merge({});renderOnboarding(0);
+}
+function openBreath(){const bc=g('breath-card');if(bc)bc.style.display='block';goTab('plan');brStep=0;breathCycle();}
+function closeBreath(){clearTimeout(brTimer);const bc=g('breath-card');if(bc)bc.style.display='none';const br=g('br-ring');if(br)br.style.transform='scale(1)';}
+function breathCycle(){const phases=[{t:'Inhala',s:'4 segundos',dur:4000,sc:1.2},{t:'Sostén',s:'7 segundos',dur:7000,sc:1.2},{t:'Exhala',s:'8 segundos',dur:8000,sc:1}];const p=phases[brStep%3];const bt=g('br-title');if(bt)bt.textContent=p.t;const bs=g('br-sub');if(bs)bs.textContent=p.s;const br=g('br-ring');if(br){br.textContent=p.t;br.style.transform=`scale(${p.sc})`;}brStep++;brTimer=setTimeout(breathCycle,p.dur);}
+
+init();
+</script>
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js')
+      .then(()=>console.log('SW registrado'))
+      .catch(e=>console.warn('SW error:',e));
+  });
+}
+</script>
+</body>
+</html>
